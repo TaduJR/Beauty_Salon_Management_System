@@ -1,17 +1,15 @@
 CREATE TABLE Account(
-  Acc_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  Employee_Name VARCHAR (20) NOT NULL,
-  Employee_Type VARCHAR (20) NOT NULL,
-  Employee_Position VARCHAR (20) NOT NULL,
-  Employee_Phone VARCHAR(11) NOT NULL,
-  Acc_User VARCHAR (20) NOT NULL,
-  Acc_Pass VARCHAR (20) NOT NULL
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  user VARCHAR (50) NOT NULL,
+  pass VARCHAR (20) NOT NULL
+  name VARCHAR (50) NOT NULL,
+  role VARCHAR (10) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
 );
 
 CREATE TABLE Service(
   Service_ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,  
   Employee_Name VARCHAR(20) NOT NULL,
-  Employee_Type VARCHAR(20) NOT NULL,
   Services_Name VARCHAR(20) NOT NULL
 );
 
@@ -67,5 +65,5 @@ CREATE TABLE Reservation(
     
   FOREIGN KEY(Reservation_Payment_ID) REFERENCES ReservationPayment(Reservation_Payment_ID),
   FOREIGN KEY(Service_ID) REFERENCES Service(Service_ID),
-  FOREIGN KEY(Acc_ID) REFERENCES Account(Acc_ID)  
+  FOREIGN KEY(Acc_ID) REFERENCES Account(Acc_ID)   
 );
