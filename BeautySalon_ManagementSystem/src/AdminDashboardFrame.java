@@ -53,7 +53,7 @@ public class AdminDashboardFrame extends JFrame {
             contentPane.add(lbllogo);
             lbllogo.setIcon(new ImageIcon(img_logo));
 
-            String sqlQuery = String.format("SELECT name FROM SalonTPS.ACCOUNT WHERE id = %s", id);
+            String sqlQuery = String.format("SELECT name FROM SalonTPS.ACCOUNT WHERE id = %s AND role = 'admin'", id);
             statement = ConnectionManager.connection.createStatement();
             resultSet = statement.executeQuery(sqlQuery);
             if(!resultSet.next()) throw new Exception("User Not Found");

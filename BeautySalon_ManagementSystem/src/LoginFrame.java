@@ -113,9 +113,9 @@ public class LoginFrame extends JFrame {
 						LoginFrame.this.dispose();
 					}else if(role.equals("customer")) {
 						JOptionPane.showMessageDialog(null, "You Successfully logged in as Customer!");
-//						UserDashboardFrame cv = new UserDashboardFrame();
-//						cv.setVisible(true);
-//						LoginFrame.this.dispose();
+						UserDashboardFrame cv = new UserDashboardFrame(id);
+						cv.setVisible(true);
+						LoginFrame.this.dispose();
 					} else {
 						JOptionPane.showMessageDialog(null, "Please enter correct credentials!");
 					}
