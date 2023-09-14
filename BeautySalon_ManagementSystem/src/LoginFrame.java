@@ -22,7 +22,6 @@ public class LoginFrame extends JFrame {
 	private static Statement statement = null;
 	private static ResultSet resultSet = null;
 
-
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
