@@ -61,7 +61,7 @@ public class BookingFrame extends JFrame {
 	private String  bookingpaymentid = ""; 
 
 	Connection cobj;
-	Connection con;
+	static Connection con;
 	Connection connection;
 	PreparedStatement pst;
 	PreparedStatement pst1;
@@ -70,15 +70,28 @@ public class BookingFrame extends JFrame {
 	
 	
 	//Database Connection
-	public void Connection() {
-		String connection = "jdbc:sqlserver://localhost:1433;databaseName=SalonTPS;user=sa;password={arithmetic28pitpayt};encrypt = true;trustServerCertificate = true;";	
+	public static Connection Connection() {
+
+		con = null;
+		String url = "jdbc:mysql://localhost:3306/beauty_salon";
+		String username="root";
+		String password="";
+
 		try {
-			con = DriverManager.getConnection(connection);
-		}catch(SQLException ex) {
-			ex.printStackTrace();
-		}	
+			String driverName = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driverName);
+			try {
+				con = DriverManager.getConnection(url, username, password);
+			} catch (SQLException ex) {
+				System.out.println("Failed to create the database connection.");
+			}
+		} catch (ClassNotFoundException ex) {
+			System.out.println("Driver not found.");
+		}
+		return con;
 	}
-	
+
+
 	//to fetch data from the database to the JComboBox
 	public void fillComboBoxService()
 	{
@@ -373,6 +386,7 @@ public class BookingFrame extends JFrame {
 					PaymentIDValue();
 					ServiceIDValue();
 										
+//					pst = con.prepareStatement("INSERT INTO Booking(Booking_Payment_ID,Cust_Name, Cust_Address, Cust_Phone,Service_ID,Services_Name, Employee_Name,Acc_ID, Booking_Date)values(?,?,?,?,?,?,?,?,?)");
 					pst = con.prepareStatement("INSERT INTO Booking(Booking_Payment_ID,Cust_Name, Cust_Address, Cust_Phone,Service_ID,Services_Name, Employee_Name,Acc_ID, Booking_Date)values(?,?,?,?,?,?,?,?,?)");
 					pst.setString(1, bookingpaymentid);
 					pst.setString(2, names);

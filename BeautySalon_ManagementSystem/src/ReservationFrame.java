@@ -62,21 +62,34 @@ public class ReservationFrame extends JFrame {
 	private String timeValue = "";
 	private JTable table;
 	private JCheckBox chckbxShowAvailability;
-	
-	Connection con;
+
+	static Connection con;
 	Connection connection;
 	PreparedStatement pst;
 	ResultSet rs;
 
-	public void Connection() {
-		String connection = "jdbc:sqlserver://localhost:1433;databaseName=SalonTPS;user=sa;password={arithmetic28pitpayt};encrypt = true;trustServerCertificate = true;";	
+	public static Connection Connection() {
+
+		con = null;
+		String url = "jdbc:mysql://localhost:3306/beauty_salon";
+		String username="root";
+		String password="";
+
 		try {
-			con = DriverManager.getConnection(connection);
-		}catch(SQLException ex) {
-			ex.printStackTrace();
+			String driverName = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driverName);
+			try {
+				con = DriverManager.getConnection(url, username, password);
+			} catch (SQLException ex) {
+				System.out.println("Failed to create the database connection.");
+			}
+		} catch (ClassNotFoundException ex) {
+			System.out.println("Driver not found.");
 		}
+		return con;
 	}
-	
+
+
 	//to fetch data from the database to the JComboBox
 	public void fillComboBoxService()
 	{
@@ -459,9 +472,9 @@ public class ReservationFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				//to get and print the recent account id logged in this system
-				String User = LoginFrame.txtAccountId.getText(); 
-				
-				String names = txt_name.getText();	
+				String User = LoginFrame.txtAccountId.getText();
+
+				String names = txt_name.getText();
 				String address = txt_address.getText();
 				String contact = txt_phone.getText();	
 				String service = (String) cbx_services.getSelectedItem();

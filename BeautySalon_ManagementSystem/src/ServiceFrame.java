@@ -37,30 +37,52 @@ public class ServiceFrame extends JFrame {
 	
 	private Image img_logo = new ImageIcon(LoginFrame.class.getResource("res/LOGO-2.png")).getImage().getScaledInstance(300, 90, Image.SCALE_SMOOTH);
 	private JPanel contentPane;
+//	private JTextField txt_serviceid;
+//	private JTextField txt_servicename;
+
 	private JTextField txt_serviceid;
-	private JTextField txt_stylist;
-	private JTextField txt_service;
+	private JTextField txt_servicename;
+	private JTextField txt_serviceprice;
+
+//	private JTextField txt_stylist;
+//	private JTextField txt_service;
 	private JTable table;
-	private static JComboBox<String> cbx_type;
-	Connection con;
+//	private static JComboBox<String> cbx_type;
+
+	static Connection con;
 	PreparedStatement pst;
 
-	public void Connection() {
-		String connection = "jdbc:sqlserver://localhost:1433;databaseName=SalonTPS;user=sa;password={arithmetic28pitpayt};encrypt = true;trustServerCertificate = true;";	
+	public static Connection Connection() {
+
+		con = null;
+		String url = "jdbc:mysql://localhost:3306/beauty_salon_db";
+		String username="root";
+		String password="";
+
 		try {
-			con = DriverManager.getConnection(connection);
-		}catch(SQLException ex) {
-			ex.printStackTrace();
+			String driverName = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driverName);
+			try {
+				con = DriverManager.getConnection(url, username, password);
+			} catch (SQLException ex) {
+				System.out.println("Failed to create the database connection.");
+			}
+		} catch (ClassNotFoundException ex) {
+			System.out.println("Driver not found.");
 		}
+		return con;
 	}
 
-	
+
+
 	public void ShowData() {
 		DefaultTableModel model = new DefaultTableModel();
 		model.addColumn("Service ID");
-		model.addColumn("Stylist Name");
-		model.addColumn("Type");
+		//		model.addColumn("Type");
 		model.addColumn("Service");
+		model.addColumn("Price");
+
+
 		
 		try {
 			String query = "SELECT * FROM Service";
@@ -70,9 +92,9 @@ public class ServiceFrame extends JFrame {
 			while(rs.next()) {
 				model.addRow(new Object [] {
 					rs.getString("Service_ID"),	
-					rs.getString("Employee_Name"),	
-					rs.getString("Employee_Type"),
-					rs.getString("Services_Name"),
+					rs.getString("Service_Name"),
+//					rs.getString("Employee_Type"),
+					rs.getFloat("Service_Price"),
 				});
 					
 				}
@@ -83,7 +105,7 @@ public class ServiceFrame extends JFrame {
 			//ex.printStackTrace();
 			System.out.println("");
 		}}
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -103,26 +125,28 @@ public class ServiceFrame extends JFrame {
 	}
 	
 	public class Person {
-		public String name; // private = restricted access
-		public String stylist;
-		public String type;
+		public String serviceName; // private = restricted access
+//		public float servicePrice;
+		public float servicePrice;
+//		public String type;
 		public String service;
 		  // Getter
 		  public String getName() {
 			 				
-		    return name;
+		    return serviceName;
 		  }
 
 		  // Setter
 		  public void setName() {
-			  this.stylist = txt_stylist.getText();	
-			  this.type = (String) cbx_type.getSelectedItem();
-			  this.service = txt_service.getText();
+			  this.serviceName = txt_servicename.getText();
+//			  this.type = (String) cbx_type.getSelectedItem();
+			  this.servicePrice = Float.parseFloat(txt_serviceprice.getText());
 		    try {
-				pst = con.prepareStatement("INSERT INTO Service(Employee_Name, Employee_Type, Services_Name)values(?,?,?)");
-				pst.setString(1, stylist);
-				pst.setString(2, type);
-				pst.setString(3, service);
+				pst = con.prepareStatement("INSERT INTO Service(Service_Name, Service_Price)values(?,?)");
+				pst.setString(1, serviceName);
+				pst.setFloat(2, servicePrice);
+				pst.executeUpdate();
+				System.out.println("inserted");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -185,94 +209,88 @@ public class ServiceFrame extends JFrame {
 		lblCustomerId.setBounds(22, 191, 122, 23);
 		contentPane.add(lblCustomerId);
 		
-		JLabel lblName = new JLabel("STYLIST NAME:");
+		JLabel lblName = new JLabel("SERVICE NAME:");
 		lblName.setForeground(new Color(114, 115, 115));
 		lblName.setFont(new Font("Century Gothic", Font.PLAIN, 15));
 		lblName.setBounds(22, 226, 114, 23);
 		contentPane.add(lblName);
 		
-		txt_stylist = new JTextField();
-		txt_stylist.setFont(new Font("Century Gothic", Font.PLAIN, 15));
-		txt_stylist.setForeground(new Color(114, 115, 115));
-		txt_stylist.setColumns(10);
-		txt_stylist.setBorder(null);
-		txt_stylist.setBackground(new Color(250, 234, 240));
-		txt_stylist.setBounds(135, 225, 153, 23);
-		contentPane.add(txt_stylist);
+		txt_servicename = new JTextField();
+		txt_servicename.setFont(new Font("Century Gothic", Font.PLAIN, 15));
+		txt_servicename.setForeground(new Color(114, 115, 115));
+		txt_servicename.setColumns(10);
+		txt_servicename.setBorder(null);
+		txt_servicename.setBackground(new Color(250, 234, 240));
+		txt_servicename.setBounds(135, 225, 153, 23);
+		contentPane.add(txt_servicename);
 		
-		JLabel lblAddress = new JLabel("TYPE:");
-		lblAddress.setForeground(new Color(114, 115, 115));
-		lblAddress.setFont(new Font("Century Gothic", Font.PLAIN, 15));
-		lblAddress.setBounds(22, 259, 70, 23);
-		contentPane.add(lblAddress);
+//		JLabel lblAddress = new JLabel("TYPE:");
+//		lblAddress.setForeground(new Color(114, 115, 115));
+//		lblAddress.setFont(new Font("Century Gothic", Font.PLAIN, 15));
+//		lblAddress.setBounds(22, 259, 70, 23);
+//		contentPane.add(lblAddress);
 		
-		JLabel lblContactNo = new JLabel("SERVICE:");
+		JLabel lblContactNo = new JLabel("PRICE:");
 		lblContactNo.setForeground(new Color(114, 115, 115));
 		lblContactNo.setFont(new Font("Century Gothic", Font.PLAIN, 15));
 		lblContactNo.setBounds(22, 292, 99, 23);
 		contentPane.add(lblContactNo);
 		
-		txt_service = new JTextField();
-		txt_service.setFont(new Font("Century Gothic", Font.PLAIN, 15));
-		txt_service.setForeground(new Color(114, 115, 115));
-		txt_service.setColumns(10);
-		txt_service.setBorder(null);
-		txt_service.setBackground(new Color(250, 234, 240));
-		txt_service.setBounds(135, 292, 153, 23);
-		contentPane.add(txt_service);
+		txt_serviceprice = new JTextField();
+		txt_serviceprice.setFont(new Font("Century Gothic", Font.PLAIN, 15));
+		txt_serviceprice.setForeground(new Color(114, 115, 115));
+		txt_serviceprice.setColumns(10);
+		txt_serviceprice.setBorder(null);
+		txt_serviceprice.setBackground(new Color(250, 234, 240));
+		txt_serviceprice.setBounds(135, 292, 153, 23);
+		contentPane.add(txt_serviceprice);
 		
-		JComboBox<String> cbx_type = new JComboBox();
-		cbx_type.setForeground(new Color(114, 115, 115));
-		cbx_type.setFont(new Font("Century Gothic", Font.PLAIN, 15));
-		cbx_type.addItem("Part-time");
-		cbx_type.addItem("Full-time");
-		cbx_type.setBackground(new Color(250, 234, 240));
-		cbx_type.setBounds(135, 259, 153, 23);
-		contentPane.add(cbx_type);
+//		JComboBox<String> cbx_type = new JComboBox();
+//		cbx_type.setForeground(new Color(114, 115, 115));
+//		cbx_type.setFont(new Font("Century Gothic", Font.PLAIN, 15));
+//		cbx_type.addItem("Part-time");
+//		cbx_type.addItem("Full-time");
+//		cbx_type.setBackground(new Color(250, 234, 240));
+//		cbx_type.setBounds(135, 259, 153, 23);
+//		contentPane.add(cbx_type);
 		
 		//Add button function with database
 		JButton btnCreate = new JButton("ADD");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//variable declaration
-				String stylist = txt_stylist.getText();	
-				String type = (String) cbx_type.getSelectedItem();
-				String service = txt_service.getText();	
+				String serviceName = txt_servicename.getText();
+//				String type = (String) cbx_type.getSelectedItem();
+				Float servicePrice = Float.valueOf(txt_serviceprice.getText());
+				System.out.println(serviceName + servicePrice);
 
 				try {
-					pst = con.prepareStatement("INSERT INTO Service(Employee_Name, Employee_Type, Services_Name)values(?,?,?)");
-					pst.setString(1, stylist);
-					pst.setString(2, type);
-					pst.setString(3, service);
+					pst = con.prepareStatement("INSERT INTO Service(Service_Name,Service_Price)values(?,?)");
+					pst.setString(1, serviceName);
+//					pst.setString(2, type);
+					pst.setFloat(2, servicePrice);
 					
-					//To prevent duplicate inputs in name, account users, and account passwords from users 
-					String s = "";
-				    boolean exists = false;
+
 				    for(int i = 0; i < table.getRowCount(); i++) {
-				    	 s = table.getValueAt(i, 1).toString().trim();				    
-				    	 if (stylist.equals(s) | type.equals(s) | service.equals(s) ) {
-				                exists = true;
-				                JOptionPane.showMessageDialog(null, "The credentials is already in the system!"); 
-				        } else if (service.isEmpty() | cbx_type.equals(null) | stylist.isEmpty()  ) {
-			                exists = true;
+				    	 if (serviceName.isEmpty() | servicePrice.toString().isEmpty()) {
+
 			                JOptionPane.showMessageDialog(null, "Please enter complete value!"); break;
 			        } 
 				    } 
 				    
 				  //to add the inputs of the users that doesn't duplicates the row of the name, user and password column.
-					if(!exists) {
+
+					System.out.println("h");
 						JOptionPane.showConfirmDialog(null, "Are you sure you want to save?", "CONFIRMATION!", JOptionPane.YES_NO_OPTION);
 						pst.executeUpdate();
 						
 						JOptionPane.showMessageDialog(null, "Successfully added!");
 						ShowData();
 						txt_serviceid.setText("");
-						txt_stylist.setText("");
-						cbx_type.setSelectedItem(null);
-						txt_service.setText("");	
-					} else {
-						
-					}				
+						txt_servicename.setText("");
+//						cbx_type.setSelectedItem(null);
+						txt_serviceprice.setText("");
+
 
 				} catch (NullPointerException | SQLException e2) 
 				{
@@ -302,12 +320,12 @@ public class ServiceFrame extends JFrame {
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String ID = txt_serviceid.getText();
-				String stylist = txt_stylist.getText();	
-				String type = (String) cbx_type.getSelectedItem();
-				String service = txt_service.getText();	
+				String serviceName = txt_servicename.getText();
+//				String type = (String) cbx_type.getSelectedItem();
+				String servicePrice = txt_serviceprice.getText();
 				
 				try {
-					pst = con.prepareStatement("UPDATE Service SET Employee_Name='"+stylist+"', Employee_Type='"+type+"', Services_Name='"+service+"' WHERE Service_ID='"+ID+"'");
+					pst = con.prepareStatement("UPDATE Service SET Service_Name='"+serviceName+"', Service_Price='"+servicePrice+"' WHERE Service_ID='"+ID+"'");
 					int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to make changes?", "ALERT!", JOptionPane.YES_NO_OPTION);
 					if(input == JOptionPane.YES_OPTION) {
 						pst.execute();
@@ -358,9 +376,9 @@ public class ServiceFrame extends JFrame {
 						}
 					}
 					txt_serviceid.setText("");
-					txt_stylist.setText("");
-			        txt_service.setText("");
-			        cbx_type.setSelectedItem(null); 
+					txt_servicename.setText("");
+			        txt_serviceprice.setText("");
+//			        cbx_type.setSelectedItem(null);
 			            
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -402,9 +420,9 @@ public class ServiceFrame extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				JOptionPane.showConfirmDialog(null, "Are you sure you want to clear your data?", "Warning", JOptionPane.WARNING_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
 				txt_serviceid.setText("");
-				txt_stylist.setText("");
-				txt_service.setText("");
-				cbx_type.setSelectedItem(null);
+				txt_servicename.setText("");
+				txt_serviceprice.setText("");
+//				cbx_type.setSelectedItem(null);
 			}});
 		btnClear.setForeground(new Color(114, 115, 115));
 		btnClear.setFont(new Font("Century Gothic", Font.PLAIN, 15));
@@ -473,9 +491,10 @@ public class ServiceFrame extends JFrame {
 				DefaultTableModel model = (DefaultTableModel)table.getModel();
 				int SelectRowIndex = table.getSelectedRow();
 				txt_serviceid.setText(model.getValueAt(SelectRowIndex, 0).toString());
-				txt_stylist.setText(model.getValueAt(SelectRowIndex, 1).toString());
-				cbx_type.setSelectedItem(model.getValueAt(SelectRowIndex, 2).toString());
-				txt_service.setText(model.getValueAt(SelectRowIndex, 3).toString());
+				txt_servicename.setText(model.getValueAt(SelectRowIndex, 1).toString());
+//				txt_serviceprice.setText(model.getValueAt(SelectRowIndex,2));
+//				cbx_type.setSelectedItem(model.getValueAt(SelectRowIndex, 2).toString());
+				txt_serviceprice.setText( model.getValueAt(SelectRowIndex, 2).toString());
 			}
 		});
 		scrollPane.setViewportView(table);

@@ -44,19 +44,31 @@ public class UserFrame extends JFrame {
 	private JTextField txt_pass;
 	private JTable table;
 	
-	Connection con;
+	static Connection con;
 	Connection connection;
 	PreparedStatement pst;
 	ResultSet rs;
-	
+
 	//Database Connection
-	public void Connection() {
-		String connection = "jdbc:sqlserver://localhost:1433;databaseName=SalonTPS;user=sa;password={arithmetic28pitpayt};encrypt = true;trustServerCertificate = true;";	
+	public static Connection Connection() {
+
+		 con = null;
+		String url = "jdbc:mysql://localhost:3306/beauty_salon";
+		String username="root";
+		String password="";
+
 		try {
-			con = DriverManager.getConnection(connection);
-		}catch(SQLException ex) {
-			ex.printStackTrace();
-		}	
+			String driverName = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driverName);
+			try {
+				con = DriverManager.getConnection(url, username, password);
+			} catch (SQLException ex) {
+				System.out.println("Failed to create the database connection.");
+			}
+		} catch (ClassNotFoundException ex) {
+			System.out.println("Driver not found.");
+		}
+		return con;
 	}
 
 	//To Launch the user frame
@@ -77,7 +89,7 @@ public class UserFrame extends JFrame {
 		DefaultTableModel model = new DefaultTableModel();
 		model.addColumn("Acc ID");
 		model.addColumn("Name");
-		model.addColumn("Type");
+//		model.addColumn("Type")
 		model.addColumn("Position");
 		model.addColumn("Contact No.");
 		model.addColumn("User Name");
@@ -91,7 +103,7 @@ public class UserFrame extends JFrame {
 				model.addRow(new Object [] {
 					rs.getString("Acc_ID"),	
 					rs.getString("Employee_Name"),	
-					rs.getString("Employee_Type"),	
+//					rs.getString("Employee_Type"),
 					rs.getString("Employee_Position"),
 					rs.getString("Employee_Phone"),
 					rs.getString("Acc_User"),	
@@ -156,11 +168,11 @@ public class UserFrame extends JFrame {
 		lblContactNo.setBounds(23, 289, 107, 24);
 		contentPane.add(lblContactNo);
 		
-		JLabel lblType = new JLabel("TYPE:");
-		lblType.setForeground(new Color(114, 115, 115));
-		lblType.setFont(new Font("Century Gothic", Font.PLAIN, 15));
-		lblType.setBounds(23, 224, 85, 24);
-		contentPane.add(lblType);
+//		JLabel lblType = new JLabel("TYPE:");
+//		lblType.setForeground(new Color(114, 115, 115));
+//		lblType.setFont(new Font("Century Gothic", Font.PLAIN, 15));
+//		lblType.setBounds(23, 224, 85, 24);
+//		contentPane.add(lblType);
 		
 		JLabel lblName = new JLabel("NAME:");
 		lblName.setForeground(new Color(114, 115, 115));
@@ -180,14 +192,14 @@ public class UserFrame extends JFrame {
 		lblUserName.setBounds(23, 322, 99, 24);
 		contentPane.add(lblUserName);
 		
-		JComboBox<String> cbx_type = new JComboBox<String>();
-		cbx_type.addItem("Part-time");
-		cbx_type.addItem("Full-time");
-		cbx_type.setForeground(new Color(114, 115, 115));
-		cbx_type.setFont(new Font("Century Gothic", Font.PLAIN, 15));
-		cbx_type.setBackground(new Color(250, 234, 240));
-		cbx_type.setBounds(130, 225, 140, 23);
-		contentPane.add(cbx_type);
+//		JComboBox<String> cbx_type = new JComboBox<String>();
+//		cbx_type.addItem("Part-time");
+//		cbx_type.addItem("Full-time");
+//		cbx_type.setForeground(new Color(114, 115, 115));
+//		cbx_type.setFont(new Font("Century Gothic", Font.PLAIN, 15));
+//		cbx_type.setBackground(new Color(250, 234, 240));
+//		cbx_type.setBounds(130, 225, 140, 23);
+//		contentPane.add(cbx_type);
 		
 		JLabel lblPassword = new JLabel("PASSWORD:");
 		lblPassword.setForeground(new Color(114, 115, 115));
@@ -303,20 +315,21 @@ public class UserFrame extends JFrame {
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String names = txt_name.getText();	
-				String type = (String) cbx_type.getSelectedItem();
+//				String type = (String) cbx_type.getSelectedItem();
 				String position = (String) cbx_position.getSelectedItem();
 				String contact = txt_phone.getText();
 				String user = txt_username.getText();	
 				String pass = txt_pass.getText();
 					
 				try {
-					pst = con.prepareStatement("insert into Account(Employee_Name,Employee_Type,Employee_Position, Employee_Phone,Acc_User,Acc_Pass)values(?,?,?,?,?,?)");
+//					pst = con.prepareStatement("insert into Account(Employee_Name,Employee_Type,Employee_Position, Employee_Phone,Acc_User,Acc_Pass)values(?,?,?,?,?,?)");
+					pst = con.prepareStatement("insert into Account(Employee_Name,Employee_Position, Employee_Phone,Acc_User,Acc_Pass)values(?,?,?,?,?,?)");
 					pst.setString(1, names);
-					pst.setString(2, type);
-					pst.setString(3, position);
-					pst.setString(4, contact);
-					pst.setString(5, user);
-					pst.setString(6, pass);
+//					pst.setString(2, type);
+					pst.setString(2, position);
+					pst.setString(3, contact);
+					pst.setString(4, user);
+					pst.setString(5, pass);
 					
 				    //To prevent duplicate inputs in name, account users, and account passwords from users 
 					String s = "";
@@ -326,7 +339,7 @@ public class UserFrame extends JFrame {
 				    	 if (names.equals(s) | user.equals(s) | pass.equals(s)) {
 				                exists = true;
 				                JOptionPane.showMessageDialog(null, "The input duplicates some values in the table!"); 
-				        } else if(names.isEmpty() |  type.isEmpty() |position.isEmpty() | contact.isEmpty()| 
+				        } else if(names.isEmpty()  |position.isEmpty() | contact.isEmpty()|
 					    		    user.isEmpty() | pass.isEmpty()) {
 				        	 exists = true;
 				             JOptionPane.showMessageDialog(null, "Please input complete values!"); break;
@@ -339,7 +352,7 @@ public class UserFrame extends JFrame {
 							JOptionPane.showMessageDialog(null, "Successfully added!");
 							ShowData(); //to automatically update the table 
 							txt_name.setText("");
-							cbx_type.setSelectedItem(-1);
+//							cbx_type.setSelectedItem(-1);
 							cbx_position.setSelectedItem(-1);
 							txt_phone.setText("");
 							txt_username.setText("");
@@ -376,7 +389,7 @@ public class UserFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String ID = txt_accid.getText();
 				String names = txt_name.getText();	
-				String type = (String) cbx_type.getSelectedItem();
+//				String type = (String) cbx_type.getSelectedItem();
 				String position = (String) cbx_position.getSelectedItem();
 				String contact = txt_phone.getText();
 				String user = txt_username.getText();	
@@ -384,7 +397,7 @@ public class UserFrame extends JFrame {
 				
 				try {
 					
-					pst = con.prepareStatement("UPDATE Account SET Employee_Name='"+names+"', Employee_Type='"+type+"', Employee_Position='"+position+"', Employee_Phone='"+contact+"',Acc_User='"+user+"',Acc_Pass='"+pass+"' WHERE Acc_ID='"+ID+"'");
+					pst = con.prepareStatement("UPDATE Account SET Employee_Name='"+names+"', Employee_Position='"+position+"', Employee_Phone='"+contact+"',Acc_User='"+user+"',Acc_Pass='"+pass+"' WHERE Acc_ID='"+ID+"'");
 					
 					int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to make changes?", "ALERT!", JOptionPane.YES_NO_OPTION);
 					if(input == JOptionPane.YES_OPTION) {
@@ -438,7 +451,7 @@ public class UserFrame extends JFrame {
 						}
 			            txt_accid.setText("");
 						txt_name.setText("");
-						cbx_type.setSelectedIndex(-1);
+//						cbx_type.setSelectedIndex(-1);
 						cbx_position.setSelectedIndex(-1);
 						txt_phone.setText("");
 						txt_username.setText("");
@@ -484,7 +497,7 @@ public class UserFrame extends JFrame {
 				JOptionPane.showConfirmDialog(null, "Are you sure you want to clear your data?", "Warning", JOptionPane.WARNING_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
 				txt_accid.setText("");
 				txt_name.setText("");
-				cbx_type.setSelectedIndex(-1);
+//				cbx_type.setSelectedIndex(-1);
 				cbx_position.setSelectedIndex(-1);
 				txt_phone.setText("");
 				txt_username.setText("");
@@ -508,7 +521,7 @@ public class UserFrame extends JFrame {
 					int SelectRowIndex = table.getSelectedRow();
 					txt_accid.setText(model.getValueAt(SelectRowIndex, 0).toString());
 					txt_name.setText(model.getValueAt(SelectRowIndex, 1).toString());
-					cbx_type.setSelectedItem(model.getValueAt(SelectRowIndex, 2).toString());
+//					cbx_type.setSelectedItem(model.getValueAt(SelectRowIndex, 2).toString());
 					cbx_position.setSelectedItem(model.getValueAt(SelectRowIndex, 3).toString());
 					txt_phone.setText(model.getValueAt(SelectRowIndex, 4).toString());
 					txt_username.setText(model.getValueAt(SelectRowIndex, 5).toString());
@@ -520,7 +533,7 @@ public class UserFrame extends JFrame {
 		table.setFont(new Font("Century Gothic", Font.PLAIN, 9));
 		scrollPane.setViewportView(table);
 		
-		JLabel lblPosition = new JLabel("POSITION:");
+		JLabel lblPosition = new JLabel("ROLE:");
 		lblPosition.setForeground(new Color(114, 115, 115));
 		lblPosition.setFont(new Font("Century Gothic", Font.PLAIN, 15));
 		lblPosition.setBounds(23, 255, 107, 24);

@@ -39,8 +39,31 @@ public class PaymentFrame extends JFrame {
 	private Image img_book = new ImageIcon(LoginFrame.class.getResource("res/BOOK.png")).getImage().getScaledInstance(93, 89, Image.SCALE_SMOOTH);
 	private Image img_phone = new ImageIcon(LoginFrame.class.getResource("res/PHONE.png")).getImage().getScaledInstance(90, 86, Image.SCALE_SMOOTH);
 	private JPanel contentPane;
+
+	static Connection con;
+	Connection connection;
 	
-	
+	public static Connection Connection() {
+
+		con = null;
+		String url = "jdbc:mysql://localhost:3306/beauty_salon";
+		String username="root";
+		String password="";
+
+		try {
+			String driverName = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driverName);
+			try {
+				con = DriverManager.getConnection(url, username, password);
+			} catch (SQLException ex) {
+				System.out.println("Failed to create the database connection.");
+			}
+		} catch (ClassNotFoundException ex) {
+			System.out.println("Driver not found.");
+		}
+		return con;
+	}
+
 	/**
 	 * Launch the application.
 	 */

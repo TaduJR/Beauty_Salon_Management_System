@@ -45,7 +45,7 @@ public class TransactionFrame extends JFrame {
 	private JTable tableReservationPayment;
 	private JTextField textField;
 	
-	Connection con;
+	static Connection con;
 	Connection connection;
 	PreparedStatement pst;
 	ResultSet rs;
@@ -53,15 +53,26 @@ public class TransactionFrame extends JFrame {
 	private JTextField textField_1;
 	
 	//Database Connection
-	public void Connection() {
-		String connection = "jdbc:sqlserver://localhost:1433;databaseName=SalonTPS;user=sa;password={arithmetic28pitpayt};encrypt = true;trustServerCertificate = true;";	
+	public static Connection Connection() {
+
+		con = null;
+		String url = "jdbc:mysql://localhost:3306/beauty_salon";
+		String username="root";
+		String password="";
+
 		try {
-			con = DriverManager.getConnection(connection);
-		}catch(SQLException ex) {
-			ex.printStackTrace();
-		}	
+			String driverName = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driverName);
+			try {
+				con = DriverManager.getConnection(url, username, password);
+			} catch (SQLException ex) {
+				System.out.println("Failed to create the database connection.");
+			}
+		} catch (ClassNotFoundException ex) {
+			System.out.println("Driver not found.");
+		}
+		return con;
 	}
-	
 		//a method to show and fetch data from the database to the Jtable
 		public void ShowDataReservationPayment() {
 			DefaultTableModel model = new DefaultTableModel();
@@ -133,12 +144,13 @@ public class TransactionFrame extends JFrame {
 			
 			try {
 				String query = "SELECT * FROM BookingPayment JOIN Booking ON BookingPayment.Booking_Payment_ID = Booking.Booking_Payment_ID;";
+
 				PreparedStatement ps = con.prepareStatement(query);
 				ResultSet rs = ps.executeQuery();
 				
 				while(rs.next()) {
 					model.addRow(new Object [] {
-							rs.getString("Booking_No"),							
+							rs.getString("Booking_No"),
 							rs.getString("Cust_Name"),		
 							rs.getString("Cust_Address"),
 							rs.getString("Cust_Phone"),

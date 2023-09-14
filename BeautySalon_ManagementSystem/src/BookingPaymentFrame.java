@@ -48,18 +48,31 @@ public class BookingPaymentFrame extends JFrame {
 	 //create a string for the foreign keys
 	
 	//Database connection
-	Connection con;
+	static Connection con;
 	Connection connection;
 	PreparedStatement pst;
 	ResultSet rs;
-	public void Connection() {
-		String connection = "jdbc:sqlserver://localhost:1433;databaseName=SalonTPS;user=sa;password={arithmetic28pitpayt};encrypt = true;trustServerCertificate = true;";	
+	public static Connection Connection() {
+
+		con = null;
+		String url = "jdbc:mysql://localhost:3306/beauty_salon";
+		String username="root";
+		String password="";
+
 		try {
-			con = DriverManager.getConnection(connection);
-		}catch(SQLException ex) {
-			ex.printStackTrace();
+			String driverName = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driverName);
+			try {
+				con = DriverManager.getConnection(url, username, password);
+			} catch (SQLException ex) {
+				System.out.println("Failed to create the database connection.");
+			}
+		} catch (ClassNotFoundException ex) {
+			System.out.println("Driver not found.");
 		}
+		return con;
 	}
+
 
 	public void ShowData() {
 		DefaultTableModel model = new DefaultTableModel();
@@ -71,14 +84,23 @@ public class BookingPaymentFrame extends JFrame {
 		model.addColumn("Total");
 		
 		try {
-			String query = "SELECT * FROM BookingPayment JOIN Booking ON BookingPayment.Cust_Name = Booking.Cust_Name;";
+//			String query = "SELECT * FROM BookingPayment JOIN Booking ON BookingPayment.Cust_Name = Booking.Cust_Name;";
+			String query = "SELECT * FROM BookingPayment";
 			// JOIN Booking ON BookingPayment.Cust_Name = Booking.Cust_Name; 
 			PreparedStatement ps = con.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
+				System.out.println(rs.getInt("Booking_Payment_ID"));
+				System.out.println(rs.getString("Cust_Name"));
+				System.out.println(rs.getString("Cust_Status"));
+				System.out.println(rs.getString("Cust_Amount"));
+				System.out.println(rs.getString("Cust_Discount"));
+				System.out.println(rs.getString("Cust_Total"));
+
 				model.addRow(new Object [] {
-					rs.getString("Booking_Payment_ID"),	
+					rs.getInt("Booking_Payment_ID"),
+
 					rs.getString("Cust_Name"),	
 					rs.getString("Cust_Status"),
 					rs.getString("Cust_Amount"),
@@ -350,7 +372,39 @@ public class BookingPaymentFrame extends JFrame {
 		JButton btnCreate = new JButton("ADD");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Please use the edit button for updating data!");	
+				String ID = txt_custid.getText();
+				String name = txt_name.getText();
+				String status = (String) cbx_stat.getSelectedItem();
+				String amount = txt_amount.getText();
+				String disc = (String) cbx_disc.getSelectedItem();
+				String total = txt_total.getText();
+
+//				JOptionPane.showMessageDialog(null, "Please use the edit button for updating data!");
+				System.out.println(ID+ name+status+amount+disc+total);
+
+				//crud here
+				try {
+					pst = con.prepareStatement("INSERT INTO BookingPayment(Cust_Name , Cust_Status ,Cust_Amount ,Cust_Discount ,Cust_Total )values(?,?,?,?,?)");
+					pst.setString(1, name);
+					pst.setString(2, status);
+					pst.setString(3, amount);
+					pst.setString(4, disc);
+					pst.setString(5, total);
+					pst.executeUpdate();
+					System.out.println("Stored");
+					ShowData();
+
+
+
+				} catch (NullPointerException | SQLException e2)
+				{
+					JOptionPane.showMessageDialog(null, "Enter complete values!");
+				}
+
+
+
+
+
 			}
 		});
 
