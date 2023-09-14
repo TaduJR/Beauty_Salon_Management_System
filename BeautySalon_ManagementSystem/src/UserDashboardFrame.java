@@ -81,7 +81,8 @@ public class UserDashboardFrame extends JFrame {
 				@Override
 				public void mouseExited(MouseEvent e) {
 					lblPayment.setForeground(Color.GRAY);
-				}});
+				}
+			});
 			lblPayment.setHorizontalAlignment(SwingConstants.CENTER);
 			lblPayment.setForeground(new Color(114, 115, 115));
 			lblPayment.setFont(new Font("Century Gothic", Font.PLAIN, 18));
