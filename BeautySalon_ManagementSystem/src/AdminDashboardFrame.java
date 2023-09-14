@@ -70,8 +70,8 @@ public class AdminDashboardFrame extends JFrame {
             lblUsers.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-//                UserFrame cv = new UserFrame();
-//                cv.setVisible(true);
+                    UserFrame cv = new UserFrame(id);
+                    cv.setVisible(true);
                     AdminDashboardFrame.this.dispose();
                 }
                 @Override
@@ -94,7 +94,7 @@ public class AdminDashboardFrame extends JFrame {
                 public void mouseClicked(MouseEvent e) {
 //                ServiceFrame cv = new ServiceFrame();
 //                cv.setVisible(true);
-                    AdminDashboardFrame.this.dispose();
+//                AdminDashboardFrame.this.dispose();
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {

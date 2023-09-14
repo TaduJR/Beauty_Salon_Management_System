@@ -16,9 +16,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class LoginFrame extends JFrame {
-	private final JTextField txtFieldUserName;
 	private final JPasswordField passFieldPassword;
-	private JComboBox<String> comboBoxRole;
+	private final JComboBox<String> comboBoxRole;
 	private static Statement statement = null;
 	private static ResultSet resultSet = null;
 
@@ -50,13 +49,13 @@ public class LoginFrame extends JFrame {
 		Image img_logo = new ImageIcon(Objects.requireNonNull(LoginFrame.class.getResource("res/LOGO.png"))).getImage().getScaledInstance(300, 177, Image.SCALE_SMOOTH);
 		labelLogo.setIcon(new ImageIcon(img_logo));
 
-		//UserName TextField
-		txtFieldUserName = new JTextField();
-		txtFieldUserName.setBounds(220, 276, 284, 38);
-		txtFieldUserName.setBorder(new LineBorder(new Color(252, 193, 213))); // border color
-		txtFieldUserName.setFont(new Font("Century Gothic", Font.PLAIN, 16));
-		contentPane.add(txtFieldUserName);
-		txtFieldUserName.setLayout(null);
+
+		JTextField txtFieldPhone = new JTextField();
+		txtFieldPhone.setBounds(220, 276, 284, 38);
+		txtFieldPhone.setBorder(new LineBorder(new Color(252, 193, 213))); // border color
+		txtFieldPhone.setFont(new Font("Century Gothic", Font.PLAIN, 16));
+		contentPane.add(txtFieldPhone);
+		txtFieldPhone.setLayout(null);
 
 		passFieldPassword = new JPasswordField();
 		passFieldPassword.setBounds(220, 324, 284, 38);
@@ -66,7 +65,7 @@ public class LoginFrame extends JFrame {
 		passFieldPassword.setLayout(null);
 
 
-		JLabel labelUserName = new JLabel("Username");
+		JLabel labelUserName = new JLabel("Phone");
 		labelUserName.setBounds(150, 277, 70, 37);
 		contentPane.add(labelUserName);
 
@@ -93,16 +92,14 @@ public class LoginFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					String userName =  txtFieldUserName.getText();
+					int userName = Integer.parseInt(txtFieldPhone.getText());
 					String password = new String(passFieldPassword.getPassword());;
 					String role = (String) comboBoxRole.getSelectedItem();
 
-					if(Objects.equals(userName, "")
-							|| Objects.equals(password, "")
-							|| role == null)
+					if(Objects.equals(password, "") || role == null)
 						throw new Exception("Please Fill all Required Fields.");
 
-					String sqlQuery = String.format("SELECT * FROM SalonTPS.ACCOUNT WHERE role='%s' AND username='%s' AND password='%s'", role, userName, password);
+					String sqlQuery = String.format("SELECT * FROM SalonTPS.ACCOUNT WHERE role='%s' AND phone =%s AND password='%s'", role, userName, password);
 					statement = ConnectionManager.connection.createStatement();
 					resultSet = statement.executeQuery(sqlQuery);
 					if(!resultSet.next()) throw new Exception("User Not Found");
@@ -122,6 +119,8 @@ public class LoginFrame extends JFrame {
 					} else {
 						JOptionPane.showMessageDialog(null, "Please enter correct credentials!");
 					}
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please Enter Only Number in Phone Field.");
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
