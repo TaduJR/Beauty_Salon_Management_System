@@ -75,6 +75,8 @@ public class BookingFrame extends JFrame {
 			while(resultSet.next()) {
 				cbx_services.addItem(resultSet.getString("name"));
 			}
+            cbx_services.setSelectedIndex(-1);
+            txt_price.setText("");
 		}
 		catch (Exception ex) {
 			JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -90,7 +92,7 @@ public class BookingFrame extends JFrame {
 		try {
 			String query = String.format("SELECT BOOKING.id AS id, SERVICE.name AS name, SERVICE.price AS price, BOOKING.date AS date " +
 					"FROM SERVICE INNER JOIN BOOKING ON SERVICE.id = BOOKING.service_id " +
-					"WHERE BOOKING.account_id = '%s'", id);
+					"WHERE BOOKING.account_id = %s", id);
 			preparedStatement = ConnectionManager.connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
 			
@@ -108,8 +110,7 @@ public class BookingFrame extends JFrame {
 		}
 	}
 	private int serviceIDValue(String service_name) {
-		String selectedService = (String) cbx_services.getSelectedItem();
-	 	String sql = "SELECT name FROM SERVICE WHERE name='" + service_name + "'";
+	 	String sql = "SELECT id, name FROM SERVICE WHERE name='" + service_name + "'";
 		 int id = -1;
 		try {
 			preparedStatement = ConnectionManager.connection.prepareStatement(sql);
@@ -125,6 +126,7 @@ public class BookingFrame extends JFrame {
 
 	public BookingFrame(int id) {
 		this.id = id;
+        Boolean initial = true;
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -135,7 +137,7 @@ public class BookingFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 550); //Frame size
 		JPanel contentPane = new JPanel();
-		contentPane.setBackground(new Color(251, 213, 225)); //background color of the panel
+		contentPane.setBackground(new Color(251, 213, 225));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -196,21 +198,20 @@ public class BookingFrame extends JFrame {
 		cbx_services = new JComboBox<String>();
 		cbx_services.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent event) {
-				if (event.getStateChange() == ItemEvent.SELECTED) {
-					String str = (String) cbx_services.getSelectedItem();
-					String sql = "SELECT price FROM SERVICE WHERE name='" + str + "'";
-					try {
-						String fetchedPrice;
-						preparedStatement = ConnectionManager.connection.prepareStatement(sql);
-						resultSet = preparedStatement.executeQuery();
-						while (resultSet.next()) {
-							fetchedPrice = String.valueOf(resultSet.getFloat("price"));
-							txt_price.setText(fetchedPrice);
-						}
-					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(null, ex.getMessage());
-					}
-				}
+                String str = (String) cbx_services.getSelectedItem();
+                String sql = "SELECT price FROM SERVICE WHERE name='" + str + "'";
+                try {
+                    String fetchedPrice;
+                    preparedStatement = ConnectionManager.connection.prepareStatement(sql);
+                    resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()) {
+                        fetchedPrice = String.valueOf(resultSet.getFloat("price"));
+                        txt_price.setText(fetchedPrice);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
+
 			}
 		});
 		cbx_services.setForeground(new Color(114, 115, 115));
@@ -242,21 +243,14 @@ public class BookingFrame extends JFrame {
 					if(cbx_services == null || Objects.equals(txt_price.getText(), "") || date.isEmpty())
 						throw new Exception("Enter complete values!");
 
-					preparedStatement = ConnectionManager.connection.prepareStatement("INSERT INTO Booking(service_id, account_id, date)values(?,?,?)");
-					preparedStatement.setInt(1, serviceIDValue(serviceName));
-					preparedStatement.setInt(2, id);
-					preparedStatement.setString(3, date);
+                    String sqlQuery = String.format("INSERT INTO BOOKING(service_id, account_id, date) VALUES(%s, %s, '%s')",serviceIDValue(serviceName), id, java.sql.Date.valueOf(date));
+                    Statement statement = ConnectionManager.connection.createStatement();
+                    statement.executeUpdate(sqlQuery);
 
-					int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to save?", "CONFIRMATION!", JOptionPane.YES_NO_OPTION);
-					if (input == JOptionPane.YES_OPTION) {
-						preparedStatement.executeUpdate();
-						JOptionPane.showMessageDialog(null, "Successfully updated!");
-						showData();
-					}
-					JOptionPane.showMessageDialog(null, "Successfully added!");
-					showData();
-					cbx_services.setSelectedIndex(-1);
-					dateChooser.setDate(null);
+                    JOptionPane.showMessageDialog(null, "Successfully added!");
+                    showData();
+                    cbx_services.setSelectedIndex(-1);
+                    dateChooser.setDate(null);
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
@@ -273,7 +267,8 @@ public class BookingFrame extends JFrame {
 			public void mouseExited(MouseEvent e) {
 				btnCreate.setForeground(Color.GRAY);
 				btnCreate.setBackground(new Color(252, 193, 213));
-			}});
+			}
+        });
 		btnCreate.setForeground(new Color(114, 115, 115));
 		btnCreate.setFont(new Font("Century Gothic", Font.PLAIN, 14));
 		btnCreate.setBorderPainted(false);
@@ -343,25 +338,6 @@ public class BookingFrame extends JFrame {
 		contentPane.add(scrollPane);
 		
 		table = new JTable();
-		//Display selected row in textFields and JComboBox.
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {	
-					DefaultTableModel model = (DefaultTableModel)table.getModel();
-					int SelectRowIndex = table.getSelectedRow();
-					txt_bookid.setText(model.getValueAt(SelectRowIndex, 0).toString());
-					cbx_services.setSelectedItem(model.getValueAt(SelectRowIndex, 4).toString());	
-
-					//get value from jTable to jDateChooser
-		            try {
-						Date date = new SimpleDateFormat("yyyy-MM-dd").parse((String)model.getValueAt(SelectRowIndex, 6).toString());
-						dateChooser.setDate(date);
-					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} 				
-					
-			}
-		});
 		table.setBorder(null);
 		table.setBackground(new Color(250, 234, 240));
 		table.setFont(new Font("Century Gothic", Font.PLAIN, 13));

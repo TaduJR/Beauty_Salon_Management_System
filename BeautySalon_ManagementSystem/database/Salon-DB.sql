@@ -19,7 +19,7 @@ CREATE TABLE BOOKING (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     service_id INT NOT NULL,
     account_id INT NOT NULL,
-    date Date,
+    date Date NOT NULL,
 
     FOREIGN KEY(service_id) REFERENCES SERVICE(id),
     FOREIGN KEY(account_id) REFERENCES ACCOUNT(id)

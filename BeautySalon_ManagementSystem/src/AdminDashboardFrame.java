@@ -40,9 +40,9 @@ public class AdminDashboardFrame extends JFrame {
     public AdminDashboardFrame(int id) throws SQLException {
         try {
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setBounds(100, 100, 700, 390); //Frame size
+            setBounds(100, 100, 700, 390);
             contentPane = new JPanel();
-            contentPane.setBackground(new Color(251, 213, 225)); //background color of the panel
+            contentPane.setBackground(new Color(251, 213, 225));
             contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
             setContentPane(contentPane);
             contentPane.setLayout(null);

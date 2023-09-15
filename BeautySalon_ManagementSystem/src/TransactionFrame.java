@@ -50,8 +50,9 @@ public class TransactionFrame extends JFrame {
 		model.addColumn("Account Owner Name");
 		model.addColumn("Service");
 		model.addColumn("Paid Amount");
-		model.addColumn("Date of Transaction");
-		model.addColumn("Account Owner Role");
+		model.addColumn("Payment Date");
+		model.addColumn("Acc Owner Phone");
+		model.addColumn("Acc Owner Role");
 
 		try {
 			String query ="SELECT Booking.id,Account.name, Service.name,Service.price, Booking.date, Account.phone, Account.role " +
@@ -62,13 +63,13 @@ public class TransactionFrame extends JFrame {
 
 			while(resultSet.next()) {
 				model.addRow(new Object [] {
-					resultSet.getInt(1),
-					resultSet.getString("Account.name"),
-					resultSet.getString("Service.name"),
-					resultSet.getString("Service.price"),
-					resultSet.getString("Booking.date"),
-					resultSet.getString("Account.phone"),
-					resultSet.getString("Account.role")
+						resultSet.getInt(1),
+						resultSet.getString(2),
+						resultSet.getString(3),
+						resultSet.getString(4),
+						resultSet.getString(5),
+						resultSet.getString(6),
+						resultSet.getString(7),
 				});
 			}
 			tableTransaction.setModel(model);
