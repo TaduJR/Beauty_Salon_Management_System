@@ -100,13 +100,6 @@ public class ServiceFrame extends JFrame {
 		Image img_logo = new ImageIcon(Objects.requireNonNull(LoginFrame.class.getResource("res/LOGO-2.png"))).getImage().getScaledInstance(300, 90, Image.SCALE_SMOOTH);
 		lblLogo.setIcon(new ImageIcon(img_logo));
 
-		JPanel panel = new JPanel();
-		panel.setLayout(null);
-		panel.setBorder(null);
-		panel.setBackground(new Color(250, 234, 240));
-		panel.setBounds(0, 110, 800, 16);
-		contentPane.add(panel);
-
 		JLabel lblBookingTransaction = new JLabel("SERVICE MANAGEMENT");
 		lblBookingTransaction.setHorizontalAlignment(SwingConstants.CENTER);
 		lblBookingTransaction.setForeground(new Color(114, 115, 115));
@@ -381,7 +374,7 @@ public class ServiceFrame extends JFrame {
 		setLocationRelativeTo(null);
 
 		JTableHeader JTHeader = table.getTableHeader();
-		JTHeader.setFont(new Font("Century Gothic", Font.PLAIN, 9));
+		JTHeader.setFont(new Font("Century Gothic", Font.PLAIN, 13));
 		JTHeader.setBackground(new Color(252, 193, 213));
 	}
 }

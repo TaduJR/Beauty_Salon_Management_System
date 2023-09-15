@@ -53,7 +53,7 @@ public class UserDashboardFrame extends JFrame {
 			contentPane.add(lbllogo);
 			lbllogo.setIcon(new ImageIcon(img_logo));
 
-			String sqlQuery = String.format("SELECT name FROM SalonTPS.ACCOUNT WHERE id = %s AND role = 'customer'", id);
+			String sqlQuery = String.format("SELECT name FROM ACCOUNT WHERE id = %s AND role = 'customer'", id);
 			statement = ConnectionManager.connection.createStatement();
 			resultSet = statement.executeQuery(sqlQuery);
 			if(!resultSet.next()) throw new Exception("User Not Found");
@@ -63,39 +63,16 @@ public class UserDashboardFrame extends JFrame {
 			lblUserDashboard.setHorizontalAlignment(SwingConstants.CENTER);
 			lblUserDashboard.setForeground(new Color(114, 115, 115));
 			lblUserDashboard.setFont(new Font("Century Gothic", Font.PLAIN, 20));
-			lblUserDashboard.setBounds(131, 131, 426, 47);
+			lblUserDashboard.setBounds(100, 131, 500, 47);
 			contentPane.add(lblUserDashboard);
-
-			JLabel lblPayment = new JLabel("PAYMENT");
-			lblPayment.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-//					PaymentFrame cv = new PaymentFrame();
-//					cv.setVisible(true);
-//					UserDashboardFrame.this.dispose();
-				}
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					lblPayment.setForeground(Color.BLACK);
-				}
-				@Override
-				public void mouseExited(MouseEvent e) {
-					lblPayment.setForeground(Color.GRAY);
-				}
-			});
-			lblPayment.setHorizontalAlignment(SwingConstants.CENTER);
-			lblPayment.setForeground(new Color(114, 115, 115));
-			lblPayment.setFont(new Font("Century Gothic", Font.PLAIN, 18));
-			lblPayment.setBounds(41, 225, 150, 33);
-			contentPane.add(lblPayment);
 
 			JLabel lblBooking = new JLabel("BOOKING");
 			lblBooking.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-//					BookingFrame cv = new BookingFrame();
-//					cv.setVisible(true);
-//					UserDashboardFrame.this.dispose();
+					BookingFrame cv = new BookingFrame(id);
+					cv.setVisible(true);
+					UserDashboardFrame.this.dispose();
 				}
 				@Override
 				public void mouseEntered(MouseEvent e) {
@@ -109,7 +86,7 @@ public class UserDashboardFrame extends JFrame {
 			lblBooking.setHorizontalAlignment(SwingConstants.CENTER);
 			lblBooking.setForeground(new Color(114, 115, 115));
 			lblBooking.setFont(new Font("Century Gothic", Font.PLAIN, 18));
-			lblBooking.setBounds(295, 225, 105, 33);
+			lblBooking.setBounds(41, 225, 150, 33);
 			contentPane.add(lblBooking);
 
 			JLabel lbllogout = new JLabel("EXIT");

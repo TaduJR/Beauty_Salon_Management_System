@@ -99,7 +99,7 @@ public class LoginFrame extends JFrame {
 					if(Objects.equals(password, "") || role == null)
 						throw new Exception("Please Fill all Required Fields.");
 
-					String sqlQuery = String.format("SELECT * FROM SalonTPS.ACCOUNT WHERE role='%s' AND phone =%s AND password='%s'", role, userName, password);
+					String sqlQuery = String.format("SELECT * FROM ACCOUNT WHERE role='%s' AND phone =%s AND password='%s'", role, userName, password);
 					statement = ConnectionManager.connection.createStatement();
 					resultSet = statement.executeQuery(sqlQuery);
 					if(!resultSet.next()) throw new Exception("User Not Found");

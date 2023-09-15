@@ -279,7 +279,7 @@ public class UserFrame extends JFrame {
 				System.out.println(ID+phone+pass+name+role);
 				
 				try {
-					preparedStatement = ConnectionManager.connection.prepareStatement("UPDATE SalonTPS.ACCOUNT SET phone='"+phone+"', password='"+pass+"', name='"+name+"', role='"+role+"' WHERE id="+ID);
+					preparedStatement = ConnectionManager.connection.prepareStatement("UPDATE ACCOUNT SET phone='"+phone+"', password='"+pass+"', name='"+name+"', role='"+role+"' WHERE id="+ID);
 					preparedStatement.executeUpdate();
 					System.out.println("edited");
 					showData();
@@ -313,7 +313,7 @@ public class UserFrame extends JFrame {
 			 	DefaultTableModel model = (DefaultTableModel)table.getModel();
 			    int selectRowIndex = table.getSelectedRow();
 			    String hold = model.getValueAt(selectRowIndex, 0).toString();
-		    	String query = "DELETE FROM SalonTPS.ACCOUNT WHERE id='"+hold +"'";
+		    	String query = "DELETE FROM ACCOUNT WHERE id='"+hold +"'";
 		        	 
 			     try {
 					 preparedStatement = ConnectionManager.connection.prepareStatement(query);

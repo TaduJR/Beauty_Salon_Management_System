@@ -2,7 +2,7 @@ import java.sql.*;
 
 public class ConnectionManager {
     public final static Connection connection = getConnection();
-    private static final String urlString = "jdbc:mysql://localhost:3306/salontps";
+    private static final String urlString = "jdbc:mysql://localhost:3306/beauty_salon";
     private static final String username = "root";
     private static final String password = "toor";
     private static Connection getConnection() {
